@@ -5,10 +5,12 @@ import java.util.Objects;
 public class Candidate {
     private int id;
     private String name;
+    private String images;
 
-    public Candidate(int id, String name) {
+    public Candidate(int id, String name, String images) {
         this.id = id;
         this.name = name;
+        this.images = images;
     }
 
     public int getId() {
@@ -25,6 +27,14 @@ public class Candidate {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getImages() {
+        return images;
+    }
+
+    public void setImages(String images) {
+        this.images = images;
     }
 
     @Override
