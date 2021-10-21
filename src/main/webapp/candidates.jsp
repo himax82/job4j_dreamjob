@@ -46,8 +46,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                        <tr>
                         <c:forEach items="${candidates}" var="candidate">
+                            <tr>
                             <td>
                                 <a href='<c:url value="/candidate/edit.jsp?id=${candidate.id}"/>'>
                                     <i class="fa fa-edit mr-3"></i>
@@ -55,13 +55,13 @@
                                 <c:out value="${candidate.name}"/>
                             </td>
                             <td>
-                                <img src="<c:url value='/download?name=${candidate.images}'/>" width="100px" height="100px"/>
+                                <img src="<c:url value='/download?id=${candidate.id}'/>" width="100px" height="100px"/>
                             </td>
                             <td>
                             <form action="<c:url value='/upload?id=${candidate.id}'/>" method="post" enctype="multipart/form-data">
                                 <button type="submit" class="btn btn-default">Добавить фото</button>
                             </form>
-                            <form action="<c:url value='/candidates.do?id=${candidate.id}'/>" method="post" enctype="multipart/form-data">
+                            <form action="<c:url value='/delete?id=${candidate.id}'/>" method="post" enctype="multipart/form-data">
                                 <button type="submit" class="btn btn-default">Удалить кандидата</button>
                             </form>
                             </td>

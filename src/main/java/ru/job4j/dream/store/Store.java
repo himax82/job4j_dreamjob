@@ -13,8 +13,8 @@ public class Store {
 
     private static final Store INST = new Store();
 
-    private static AtomicInteger POST_ID = new AtomicInteger(4);
-    private static AtomicInteger CANDIDATE_ID = new AtomicInteger(4);
+    private static AtomicInteger POST_ID = new AtomicInteger(3);
+    private static AtomicInteger CANDIDATE_ID = new AtomicInteger(3);
 
     private final Map<Integer, Post> posts = new ConcurrentHashMap<>();
     private Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();
@@ -26,9 +26,9 @@ public class Store {
                 "Работа в ВТБ зп 200к", LocalDateTime.of(2021, 10, 18, 12, 00)));
         posts.put(3, new Post(3, "Senior Java Job",
                 "Работа в Сколково зп 300к", LocalDateTime.of(2021, 10, 15, 18, 15)));
-        candidates.put(1, new Candidate(1, "Junior Java", "1.png"));
-        candidates.put(2, new Candidate(2, "Middle Java","2.png"));
-        candidates.put(3, new Candidate(3, "Senior Java", "3.png"));
+        candidates.put(1, new Candidate(1, "Junior Java"));
+        candidates.put(2, new Candidate(2, "Middle Java"));
+        candidates.put(3, new Candidate(3, "Senior Java"));
     }
 
     public static Store instOf() {
@@ -55,7 +55,7 @@ public class Store {
 
     public void deleteCandidate(int id) {
         if (candidates.get(id) != null) {
-            candidates.remove(findByIdCandidate(id));
+            candidates.remove(id, findByIdCandidate(id));
         }
     }
 

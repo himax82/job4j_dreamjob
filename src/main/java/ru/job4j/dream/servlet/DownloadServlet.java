@@ -11,7 +11,7 @@ import java.io.IOException;
 public class DownloadServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String name = req.getParameter("name");
+        String name = req.getParameter("id");
         System.out.println(name);
         File downloadFile = null;
         for (File file : new File("c:\\images\\").listFiles()) {

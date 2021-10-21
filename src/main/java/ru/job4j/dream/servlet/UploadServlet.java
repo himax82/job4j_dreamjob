@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UploadServlet extends HttpServlet {
@@ -44,15 +43,10 @@ public class UploadServlet extends HttpServlet {
             }
             for (FileItem item : items) {
                 if (!item.isFormField()) {
-                    File file = new File(folder + File.separator + req.getParameter("id")
-                            + item.getName().substring(item.getName().indexOf(".")));
-                    System.out.println(file.getAbsolutePath());
+                    File file = new File(folder + File.separator + req.getParameter("id"));
                     try (FileOutputStream out = new FileOutputStream(file)) {
                         out.write(item.getInputStream().readAllBytes());
                     }
-                    System.out.println(file.getAbsolutePath());
-                    System.out.println(file.getName());
-                    Store.instOf().findByIdCandidate(Integer.parseInt(req.getParameter("id"))).setImages(file.getName());
                 }
             }
         } catch (FileUploadException e) {

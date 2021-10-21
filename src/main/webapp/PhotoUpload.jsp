@@ -24,7 +24,7 @@
         <tbody>
             <tr valign="top">
                 <td>
-                    <img src="<c:url value='/download?name=${candidate.images}'/>" width="100px" height="100px"/>
+                    <img src="<c:url value='/download?id=${candidate.id}'/>" width="100px" height="100px"/>
                 </td>
             </tr>
         </tbody>
