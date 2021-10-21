@@ -1,6 +1,6 @@
 package ru.job4j.dream.servlet;
 
-import ru.job4j.dream.store.Store;
+import ru.job4j.dream.store.MemStore;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,9 +17,9 @@ public class DeleteServlet extends HttpServlet {
         System.out.println(req.getParameter("id"));
             int id = Integer.parseInt(req.getParameter("id"));
             System.out.println(id);
-            System.out.println(Store.instOf().findAllCandidates().size() + " candidates");
-            System.out.println(Store.instOf().findByIdCandidate(id).getName());
-            Store.instOf().deleteCandidate(id);
+            System.out.println(MemStore.instOf().findAllCandidates().size() + " candidates");
+            System.out.println(MemStore.instOf().findByIdCandidate(id).getName());
+            MemStore.instOf().deleteCandidate(id);
             File file = new File("c:\\images\\" + File.separator + id);
             System.out.println("Файл");
             System.out.println(file);
@@ -27,8 +27,8 @@ public class DeleteServlet extends HttpServlet {
             if (file.exists()) {
                 file.delete();
             }
-        System.out.println(Store.instOf().findAllCandidates().size() + " candidates");
-        req.setAttribute("candidates", Store.instOf().findAllCandidates());
+        System.out.println(MemStore.instOf().findAllCandidates().size() + " candidates");
+        req.setAttribute("candidates", MemStore.instOf().findAllCandidates());
         req.getRequestDispatcher("candidates.jsp").forward(req, resp);
     }
 
