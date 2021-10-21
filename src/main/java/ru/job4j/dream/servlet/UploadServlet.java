@@ -26,6 +26,7 @@ public class UploadServlet extends HttpServlet {
         Candidate candidate = PsqlStore.instOf().findByIdCandidate(id);
         req.setAttribute("candidate", candidate);
         RequestDispatcher dispatcher = req.getRequestDispatcher("/PhotoUpload.jsp");
+        req.setAttribute("user", req.getSession().getAttribute("user"));
         dispatcher.forward(req, resp);
     }
 
