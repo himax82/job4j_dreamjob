@@ -53,6 +53,9 @@
                 </form>
             </div>
         </div>
+        <li class="nav-item">
+            <a class="nav-link" href="<%=request.getContextPath()%>/reg.jsp">Регистрация</a>
+        </li>
     </div>
 </div>
 </body>

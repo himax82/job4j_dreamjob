@@ -149,7 +149,7 @@ public class PsqlStore implements Store {
 
     private User createUser(User user) {
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps =  cn.prepareStatement("INSERT INTO user(name, email, password) VALUES (?, ?, ?)",
+             PreparedStatement ps =  cn.prepareStatement("INSERT INTO users(name, email, password) VALUES (?, ?, ?)",
                      PreparedStatement.RETURN_GENERATED_KEYS)
         ) {
             ps.setString(1, user.getName());
@@ -194,7 +194,7 @@ public class PsqlStore implements Store {
     private void updateUser(User user) {
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =  cn.prepareStatement(
-                     "UPDATE user SET name = ? email = ? password = ? WHERE id = ?")
+                     "UPDATE users SET name = ? email = ? password = ? WHERE id = ?")
         ) {
             ps.setString(1, user.getName());
             ps.setString(2, user.getEmail());
@@ -245,18 +245,17 @@ public class PsqlStore implements Store {
     }
 
     @Override
-    public User findByIdUser(int id) {
-        User user = new User();
+    public User findByEmailUser(String email) {
+        User user = new User(0, "", email, "");
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps =  cn.prepareStatement("SELECT * FROM user WHERE id = ?")
+             PreparedStatement ps =  cn.prepareStatement("SELECT * FROM users WHERE email = ?")
         ) {
-            ps.setInt(1, id);
+            ps.setString(1, email);
             ps.execute();
             try (ResultSet it = ps.executeQuery()) {
                 if (it.next()) {
                     user.setId(it.getInt("id"));
                     user.setName(it.getString("name"));
-                    user.setEmail(it.getString("email"));
                     user.setPassword(it.getString("password"));
                 }
             }

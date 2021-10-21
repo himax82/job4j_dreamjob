@@ -14,7 +14,9 @@ public class PostServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("hi");
         req.setAttribute("posts", PsqlStore.instOf().findAllPosts());
+        System.out.println(req.getSession().getAttribute("user"));
         req.setAttribute("user", req.getSession().getAttribute("user"));
         req.getRequestDispatcher("posts.jsp").forward(req, resp);
     }
