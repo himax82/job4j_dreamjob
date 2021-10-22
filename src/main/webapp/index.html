@@ -22,6 +22,16 @@
                 return false;
             }
         }
+        function addRow() {
+            const name = $('#name').val();
+            const surname = $('#surname').val();
+            const gender = $('#gender').val();
+            const description = $('#description').val();
+            $(`#table tr:last`).after('<tr><td>' + name +'</td>' +
+                '<td>' + surname +'</td>' +
+                '<td>' + gender +'</td>' +
+                '<td>' + description +'</td></tr>');
+        }
     </script>
 </head>
 <body>
@@ -35,7 +45,7 @@
             <input type="email" class="form-control" id="name" placeholder="Иван">
         </div>
         <div class="form-group">
-            <label for="surname">Имя</label>
+            <label for="surname">Фамилия</label>
             <input type="email" class="form-control" id="surname" placeholder="Иванов">
         </div>
         <div class="form-group">
@@ -50,35 +60,19 @@
             <textarea class="form-control" id="description" rows="3"></textarea>
         </div>
         <button type="button" class="btn btn-default" onclick="return validate();">Submit</button>
+        <button type="button" class="btn btn-default" onclick="addRow()">Add row</button>
     </form>
 </div>
-<table class="table table-bordered">
+<table class="table table-bordered" id="table">
     <thead>
     <tr>
-        <th scope="col">#</th>
-        <th scope="col">First</th>
-        <th scope="col">Last</th>
-        <th scope="col">Handle</th>
+        <th scope="col">Имя</th>
+        <th scope="col">Фамилия</th>
+        <th scope="col">Пол</th>
+        <th scope="col">Описание</th>
     </tr>
     </thead>
     <tbody>
-    <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-    </tr>
-    <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-    </tr>
-    <tr>
-        <th scope="row">3</th>
-        <td colspan="2">Larry the Bird</td>
-        <td>@twitter</td>
-    </tr>
     </tbody>
 </table>
 </body>
