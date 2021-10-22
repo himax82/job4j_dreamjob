@@ -16,12 +16,11 @@
         <maven.compiler.source>14</maven.compiler.source>
         <maven.compiler.target>14</maven.compiler.target>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13.2</version>
         </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -44,11 +43,54 @@
             <artifactId>postgresql</artifactId>
             <version>42.2.9</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.8.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>2.0.2</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-dbcp2</artifactId>
             <version>2.7.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.6.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+     <build>
+         <plugins>
+        <plugin>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-maven-plugin</artifactId>
+            <version>3.6.2</version>
+            <configuration>
+                <changeLogFile>${basedir}/db/master.xml</changeLogFile>
+                <url>${db.url}</url>
+                <driver>${db.driver}</driver>
+                <username>${db.username}</username>
+                <password>${db.password}</password>
+                <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+            </configuration>
+            <executions>
+                <execution>
+                    <phase>process-resources</phase>
+                    <goals>
+                        <goal>clearCheckSums</goal>
+                        <goal>update</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+         </plugins>
+     </build>
 </project>
