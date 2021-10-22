@@ -34,6 +34,7 @@ public class PostServletTest {
         assertThat(PsqlStore.instOf().findAllPosts().size(), is(i + 1));
     }
 
+    @Ignore
     @Test
     public void whenGet() throws ServletException, IOException {
         String name = "post.jps";
