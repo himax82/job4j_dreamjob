@@ -9,14 +9,18 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
         function validate() {
-            if ($('#name').val() === "")
-            alert("Введите имя");
-            if ($('#surname').val() === "")
+            if ($('#name').val() === "") {
+                alert("Введите имя");
+                return false;
+            }
+            if ($('#surname').val() === "") {
                 alert("Введите фамилию");
-            if ($('#gender').val() === "")
-                alert("Укажите пол");
-            if ($('#description').val() === "")
+                return false;
+            }
+            if ($('#description').val() === "") {
                 alert("Заполните описание");
+                return false;
+            }
         }
     </script>
 </head>
