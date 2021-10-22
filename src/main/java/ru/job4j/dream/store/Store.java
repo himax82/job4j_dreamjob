@@ -13,7 +13,7 @@ public interface Store {
 
     void savePost(Post post);
 
-    void saveUser(User user);
+    User saveUser(User user);
 
     void saveCandidate(Candidate candidate);
 

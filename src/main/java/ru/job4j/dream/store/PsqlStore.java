@@ -107,12 +107,24 @@ public class PsqlStore implements Store {
     }
 
     @Override
-    public void saveUser(User user) {
-        if (user.getId() == 0) {
-            createUser(user);
-        } else {
-            updateUser(user);
+    public User saveUser(User user) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement("INSERT INTO users(name, email, password) VALUES (?, ?, ?)",
+                     PreparedStatement.RETURN_GENERATED_KEYS)
+        ) {
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPassword());
+            ps.execute();
+            try (ResultSet id = ps.getGeneratedKeys()) {
+                if (id.next()) {
+                    user.setId(id.getInt(1));
+                }
+            }
+        }  catch (SQLException e) {
+            LOG.error("SQL Error " + e.getMessage());
         }
+        return user;
     }
 
     private Post createPost(Post post) {
@@ -151,26 +163,6 @@ public class PsqlStore implements Store {
         return candidate;
     }
 
-    private User createUser(User user) {
-        try (Connection cn = pool.getConnection();
-             PreparedStatement ps =  cn.prepareStatement("INSERT INTO users(name, email, password) VALUES (?, ?, ?)",
-                     PreparedStatement.RETURN_GENERATED_KEYS)
-        ) {
-            ps.setString(1, user.getName());
-            ps.setString(2, user.getEmail());
-            ps.setString(3, user.getPassword());
-            ps.execute();
-            try (ResultSet id = ps.getGeneratedKeys()) {
-                if (id.next()) {
-                    user.setId(id.getInt(1));
-                }
-            }
-        }  catch (SQLException e) {
-            LOG.error("SQL Error " + e.getMessage());
-        }
-        return user;
-    }
-
     private void updatePost(Post post) {
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =  cn.prepareStatement("UPDATE post SET name = ? WHERE id = ?")
@@ -189,21 +181,6 @@ public class PsqlStore implements Store {
         ) {
             ps.setString(1, candidate.getName());
             ps.setInt(2, candidate.getId());
-            ps.execute();
-        }  catch (SQLException e) {
-            LOG.error("SQL Error " + e.getMessage());
-        }
-    }
-
-    private void updateUser(User user) {
-        try (Connection cn = pool.getConnection();
-             PreparedStatement ps =  cn.prepareStatement(
-                     "UPDATE users SET name = ? email = ? password = ? WHERE id = ?")
-        ) {
-            ps.setString(1, user.getName());
-            ps.setString(2, user.getEmail());
-            ps.setString(3, user.getPassword());
-            ps.setInt(4, user.getId());
             ps.execute();
         }  catch (SQLException e) {
             LOG.error("SQL Error " + e.getMessage());
