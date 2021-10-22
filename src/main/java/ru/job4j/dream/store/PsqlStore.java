@@ -229,7 +229,7 @@ public class PsqlStore implements Store {
     public User findByEmailUser(String email) {
         int id = 0;
         String name = null;
-        String password = name;
+        String password = null;
         User user = new User(0, "", email, "");
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =  cn.prepareStatement("SELECT * FROM users WHERE email = ?")
