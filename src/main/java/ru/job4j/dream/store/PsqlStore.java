@@ -11,10 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -66,7 +64,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (SQLException e) {
-            LOG.error("SQL Error " + e.getMessage());
+            LOG.error("SQL Error " + e.getMessage(), e);
         }
         return posts;
     }
@@ -83,7 +81,7 @@ public class PsqlStore implements Store {
                 }
             }
         }  catch (SQLException e) {
-            LOG.error("SQL Error " + e.getMessage());
+            LOG.error("SQL Error " + e.getMessage(), e);
         }
         return candidates;
     }
@@ -122,7 +120,7 @@ public class PsqlStore implements Store {
                 }
             }
         }  catch (SQLException e) {
-            LOG.error("SQL Error " + e.getMessage());
+            LOG.error("SQL Error " + e.getMessage(), e);
         }
         return user;
     }
@@ -140,7 +138,7 @@ public class PsqlStore implements Store {
                 }
             }
         }  catch (SQLException e) {
-            LOG.error("SQL Error " + e.getMessage());
+            LOG.error("SQL Error " + e.getMessage(), e);
         }
         return post;
     }
@@ -171,7 +169,7 @@ public class PsqlStore implements Store {
             ps.setInt(2, post.getId());
             ps.execute();
         }  catch (SQLException e) {
-            LOG.error("SQL Error " + e.getMessage());
+            LOG.error("SQL Error " + e.getMessage(), e);
         }
     }
 
@@ -183,12 +181,13 @@ public class PsqlStore implements Store {
             ps.setInt(2, candidate.getId());
             ps.execute();
         }  catch (SQLException e) {
-            LOG.error("SQL Error " + e.getMessage());
+            LOG.error("SQL Error " + e.getMessage(), e);
         }
     }
 
     @Override
     public Post findByIdPost(int id) {
+        Optional<Post> post = Optional.empty();
         String name = null;
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =  cn.prepareStatement("SELECT * FROM post WHERE id = ?")
@@ -197,18 +196,18 @@ public class PsqlStore implements Store {
             ps.execute();
             try (ResultSet it = ps.executeQuery()) {
                 if (it.next()) {
-                    name = it.getString("name");
+                    post = Optional.of(new Post(id, it.getString("name")));
                 }
             }
         }  catch (SQLException e) {
-            LOG.error("SQL Error " + e.getMessage());
+            LOG.error("SQL Error " + e.getMessage(), e);
         }
-        return new Post(id, name);
+        return post.orElse(null);
     }
 
     @Override
     public Candidate findByIdCandidate(int id) {
-        String name = null;
+        Optional<Candidate> candidate = Optional.empty();
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =  cn.prepareStatement("SELECT * FROM candidate WHERE id = ?")
         ) {
@@ -216,21 +215,18 @@ public class PsqlStore implements Store {
             ps.execute();
             try (ResultSet it = ps.executeQuery()) {
                 if (it.next()) {
-                    name = it.getString("name");
+                    candidate = Optional.of(new Candidate(id, it.getString("name")));
                 }
             }
         }  catch (SQLException e) {
-            LOG.error("SQL Error " + e.getMessage());
+            LOG.error("SQL Error " + e.getMessage(), e);
         }
-        return new Candidate(id, name);
+        return candidate.orElse(null);
     }
 
     @Override
     public User findByEmailUser(String email) {
-        int id = 0;
-        String name = null;
-        String password = null;
-        User user = new User(0, "", email, "");
+        Optional<User> user = Optional.empty();
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =  cn.prepareStatement("SELECT * FROM users WHERE email = ?")
         ) {
@@ -238,15 +234,17 @@ public class PsqlStore implements Store {
             ps.execute();
             try (ResultSet it = ps.executeQuery()) {
                 if (it.next()) {
-                    id = it.getInt("id");
-                    name = it.getString("name");
-                    password = it.getString("password");
+                    user = Optional.of(new User(
+                    it.getInt("id"),
+                    it.getString("name"),
+                    email,
+                    it.getString("password")));
                 }
             }
         }  catch (SQLException e) {
-            LOG.error("SQL Error " + e.getMessage());
+            LOG.error("SQL Error " + e.getMessage(), e);
         }
-        return new User(id, name, email, password);
+        return user.orElse(null);
     }
 
     public void deleteCandidate(int id) {
@@ -256,7 +254,7 @@ public class PsqlStore implements Store {
             ps.setInt(1, id);
             ps.execute();
         }  catch (SQLException e) {
-            LOG.error("SQL Error " + e.getMessage());
+            LOG.error("SQL Error " + e.getMessage(), e);
         }
     }
 }
