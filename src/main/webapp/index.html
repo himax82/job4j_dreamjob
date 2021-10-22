@@ -7,6 +7,18 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        function validate() {
+            if ($('#name').val() === "")
+            alert("Введите имя");
+            if ($('#surname').val() === "")
+                alert("Введите фамилию");
+            if ($('#gender').val() === "")
+                alert("Укажите пол");
+            if ($('#description').val() === "")
+                alert("Заполните описание");
+        }
+    </script>
 </head>
 <body>
 
@@ -23,16 +35,17 @@
             <input type="email" class="form-control" id="surname" placeholder="Иванов">
         </div>
         <div class="form-group">
-            <label for="exampleFormControlSelect1">Пол</label>
-            <select class="form-control" id="exampleFormControlSelect1">
+            <label for="gender">Пол</label>
+            <select class="form-control" id="gender">
                 <option>Мужской</option>
                 <option>Женский</option>
             </select>
         </div>
         <div class="form-group">
-            <label for="exampleFormControlTextarea1">Описание</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+            <label for="description">Описание</label>
+            <textarea class="form-control" id="description" rows="3"></textarea>
         </div>
+        <button type="button" class="btn btn-default" onclick="return validate();">Submit</button>
     </form>
 </div>
 <table class="table table-bordered">
