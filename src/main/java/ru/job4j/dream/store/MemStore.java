@@ -13,8 +13,8 @@ public class MemStore {
 
     private static final MemStore INST = new MemStore();
 
-    private static AtomicInteger POST_ID = new AtomicInteger(3);
-    private static AtomicInteger CANDIDATE_ID = new AtomicInteger(3);
+    private final static AtomicInteger POST_ID = new AtomicInteger(3);
+    private final static AtomicInteger CANDIDATE_ID = new AtomicInteger(3);
 
     private final Map<Integer, Post> posts = new ConcurrentHashMap<>();
     private Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();

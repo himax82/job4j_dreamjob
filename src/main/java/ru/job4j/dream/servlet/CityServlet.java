@@ -14,10 +14,9 @@ import java.util.List;
 
 public class CityServlet extends HttpServlet {
 
-    List<City> list = (List<City>) PsqlStore.instOf().findAllCity();
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        List<City> list = (List<City>) PsqlStore.instOf().findAllCity();
         ObjectMapper mapper = new ObjectMapper();
         String string = mapper.writeValueAsString(list);
         resp.setContentType("application/json; charset=utf-8");
@@ -26,8 +25,8 @@ public class CityServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        List<City> list = (List<City>) PsqlStore.instOf().findAllCity();
         String city = list.get(Integer.parseInt(req.getParameter("id"))).getName();
-        System.out.println("fdfdfdf");
         resp.setContentType("text/html");
         resp.setCharacterEncoding("UTF-8");
         resp.getWriter().write(city);
