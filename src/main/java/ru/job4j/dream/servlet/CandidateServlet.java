@@ -9,12 +9,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class CandidateServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute("candidates", PsqlStore.instOf().findAllCandidates());
+        req.setAttribute("cities", PsqlStore.instOf().findAllCity());
         req.setAttribute("user", req.getSession().getAttribute("user"));
         req.getRequestDispatcher("candidates.jsp").forward(req, resp);
     }
@@ -22,8 +24,10 @@ public class CandidateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
+        System.out.println("fdfdfdf");
+        System.out.println(req.getParameter("idCity") + "id city");
         PsqlStore.instOf().saveCandidate(new Candidate(Integer.parseInt(req.getParameter("id")),
-                req.getParameter("name")));
+                req.getParameter("name"), Integer.parseInt(req.getParameter("idCity")), LocalDateTime.now()));
         resp.sendRedirect(req.getContextPath() + "/candidates.do");
     }
 }

@@ -2,6 +2,7 @@
     <%@ page contentType="text/html; charset=UTF-8" %>
     <%@ page import="ru.job4j.dream.store.MemStore" %>
     <%@ page import="ru.job4j.dream.model.Post" %>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     <!doctype html>
     <html lang="en">
     <head>
@@ -48,6 +49,25 @@
                 Сегодняшние вакансии.
             </div>
             <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Названия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${posts}" var="post">
+                        <tr>
+                            <td>
+                                <a href='<c:url value="/post/edit.jsp?id=${post.id}"/>'>
+                                    <i class="fa fa-edit mr-3"></i>
+                                </a>
+                                <c:out value="${post.name}"/>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -57,6 +77,44 @@
                 Сегодняшние кандидаты.
             </div>
             <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Имя</th>
+                        <th scope="col">Город</th>
+                        <th scope="col">Фото</th>
+                        <th scope="col">Действие</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${candidates}" var="candidate">
+                        <tr>
+                            <td>
+                                <a href='<c:url value="/candidate/edit.jsp?id=${candidate.id}"/>'>
+                                    <i class="fa fa-edit mr-3"></i>
+                                </a>
+                                <c:out value="${candidate.name}"/>
+                            </td>
+                            <td>
+                                <c:set var="i" value="${candidate.cityId}"/>
+                                <c:set var="cityname" value="${cities[i - 1]}"/>
+                                <c:out value="${cityname.name}"/>
+                            </td>
+                            <td>
+                                <img src="<c:url value='/download?id=${candidate.id}'/>" width="100px" height="100px"/>
+                            </td>
+                            <td>
+                                <form action="<c:url value='/upload?id=${candidate.id}'/>" method="post" enctype="multipart/form-data">
+                                    <button type="submit" class="btn btn-default">Добавить фото</button>
+                                </form>
+                                <form action="<c:url value='/delete?id=${candidate.id}'/>" method="post" enctype="multipart/form-data">
+                                    <button type="submit" class="btn btn-default">Удалить кандидата</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

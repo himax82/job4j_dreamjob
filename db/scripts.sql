@@ -1,11 +1,14 @@
 CREATE TABLE post (
                       id SERIAL PRIMARY KEY,
-                      name TEXT
+                      name TEXT,
+                      created timestamp
 );
 
 CREATE TABLE candidate (
                            id SERIAL PRIMARY KEY,
-                           name TEXT
+                           name TEXT,
+                           cityId int references city (id),
+                           created timestamp
 );
 
 CREATE TABLE users (
@@ -13,4 +16,10 @@ CREATE TABLE users (
                        name TEXT UNIQUE,
                        email TEXT,
                        password TEXT
+);
+
+create table city
+(
+    id            serial primary key,
+    name          text
 );

@@ -1,17 +1,15 @@
 package ru.job4j.dream.model;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Post {
+public class City {
+
     private int id;
     private String name;
-    private LocalDateTime created;
 
-    public Post(int id, String name, LocalDateTime created) {
+    public City(int id, String name) {
         this.id = id;
         this.name = name;
-        this.created = created;
     }
 
     public int getId() {
@@ -30,15 +28,6 @@ public class Post {
         this.name = name;
     }
 
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -47,12 +36,12 @@ public class Post {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Post post = (Post) o;
-        return id == post.id && Objects.equals(name, post.name) && Objects.equals(created, post.created);
+        City city = (City) o;
+        return id == city.id && Objects.equals(name, city.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, created);
+        return Objects.hash(id, name);
     }
 }

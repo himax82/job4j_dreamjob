@@ -2,15 +2,13 @@ package ru.job4j.dream.store;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import ru.job4j.dream.model.Candidate;
+import ru.job4j.dream.model.City;
 import ru.job4j.dream.model.Post;
 import ru.job4j.dream.model.User;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 import org.apache.log4j.LogManager;
@@ -60,7 +58,26 @@ public class PsqlStore implements Store {
         ) {
             try (ResultSet it = ps.executeQuery()) {
                 while (it.next()) {
-                    posts.add(new Post(it.getInt("id"), it.getString("name")));
+                    posts.add(new Post(it.getInt("id"), it.getString("name"),
+                            it.getTimestamp("created").toLocalDateTime()));
+                }
+            }
+        } catch (SQLException e) {
+            LOG.error("SQL Error " + e.getMessage(), e);
+        }
+        return posts;
+    }
+
+    @Override
+    public Collection<Post> findAllPostsToDay() {
+        List<Post> posts = new ArrayList<>();
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement("SELECT * FROM post WHERE created >= NOW() - '1 day'::INTERVAL")
+        ) {
+            try (ResultSet it = ps.executeQuery()) {
+                while (it.next()) {
+                    posts.add(new Post(it.getInt("id"), it.getString("name"),
+                            it.getTimestamp("created").toLocalDateTime()));
                 }
             }
         } catch (SQLException e) {
@@ -77,7 +94,26 @@ public class PsqlStore implements Store {
         ) {
             try (ResultSet it = ps.executeQuery()) {
                 while (it.next()) {
-                    candidates.add(new Candidate(it.getInt("id"), it.getString("name")));
+                    candidates.add(new Candidate(it.getInt("id"), it.getString("name"),
+                            it.getInt("cityId"), it.getTimestamp("created").toLocalDateTime()));
+                }
+            }
+        }  catch (SQLException e) {
+            LOG.error("SQL Error " + e.getMessage(), e);
+        }
+        return candidates;
+    }
+
+    @Override
+    public Collection<Candidate> findAllCandidatesToDay() {
+        List<Candidate> candidates = new ArrayList<>();
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement("SELECT * FROM candidate WHERE created >= NOW() - '1 day'::INTERVAL")
+        ) {
+            try (ResultSet it = ps.executeQuery()) {
+                while (it.next()) {
+                    candidates.add(new Candidate(it.getInt("id"), it.getString("name"),
+                            it.getInt("cityId"), it.getTimestamp("created").toLocalDateTime()));
                 }
             }
         }  catch (SQLException e) {
@@ -127,10 +163,11 @@ public class PsqlStore implements Store {
 
     private Post createPost(Post post) {
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps =  cn.prepareStatement("INSERT INTO post(name) VALUES (?)",
+             PreparedStatement ps =  cn.prepareStatement("INSERT INTO post(name, created) VALUES (?, ?)",
                      PreparedStatement.RETURN_GENERATED_KEYS)
         ) {
             ps.setString(1, post.getName());
+            ps.setTimestamp(2, Timestamp.valueOf(post.getCreated()));
             ps.execute();
             try (ResultSet id = ps.getGeneratedKeys()) {
                 if (id.next()) {
@@ -145,10 +182,12 @@ public class PsqlStore implements Store {
 
     private Candidate createCandidate(Candidate candidate) {
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps =  cn.prepareStatement("INSERT INTO candidate(name) VALUES (?)",
+             PreparedStatement ps =  cn.prepareStatement("INSERT INTO candidate(name, cityid, created) VALUES (?, ?, ?)",
                      PreparedStatement.RETURN_GENERATED_KEYS)
         ) {
             ps.setString(1, candidate.getName());
+            ps.setInt(2, candidate.getCityId());
+            ps.setTimestamp(3, Timestamp.valueOf(candidate.getCreated()));
             ps.execute();
             try (ResultSet id = ps.getGeneratedKeys()) {
                 if (id.next()) {
@@ -175,10 +214,11 @@ public class PsqlStore implements Store {
 
     private void updateCandidate(Candidate candidate) {
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps =  cn.prepareStatement("UPDATE candidate SET name = ? WHERE id = ?")
+             PreparedStatement ps =  cn.prepareStatement("UPDATE candidate SET name = ? cityid = ? WHERE id = ?")
         ) {
             ps.setString(1, candidate.getName());
-            ps.setInt(2, candidate.getId());
+            ps.setInt(2, candidate.getCityId());
+            ps.setInt(3, candidate.getId());
             ps.execute();
         }  catch (SQLException e) {
             LOG.error("SQL Error " + e.getMessage(), e);
@@ -187,8 +227,7 @@ public class PsqlStore implements Store {
 
     @Override
     public Post findByIdPost(int id) {
-        Optional<Post> post = Optional.empty();
-        String name = null;
+        Post post = null;
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =  cn.prepareStatement("SELECT * FROM post WHERE id = ?")
         ) {
@@ -196,13 +235,13 @@ public class PsqlStore implements Store {
             ps.execute();
             try (ResultSet it = ps.executeQuery()) {
                 if (it.next()) {
-                    post = Optional.of(new Post(id, it.getString("name")));
+                    post = new Post(id, it.getString("name"), it.getTimestamp("created").toLocalDateTime());
                 }
             }
         }  catch (SQLException e) {
             LOG.error("SQL Error " + e.getMessage(), e);
         }
-        return post.orElse(null);
+        return post;
     }
 
     @Override
@@ -215,7 +254,8 @@ public class PsqlStore implements Store {
             ps.execute();
             try (ResultSet it = ps.executeQuery()) {
                 if (it.next()) {
-                    candidate = Optional.of(new Candidate(id, it.getString("name")));
+                    candidate = Optional.of(new Candidate(id, it.getString("name"),
+                            it.getInt("cityId"), it.getTimestamp("created").toLocalDateTime()));
                 }
             }
         }  catch (SQLException e) {
@@ -256,5 +296,21 @@ public class PsqlStore implements Store {
         }  catch (SQLException e) {
             LOG.error("SQL Error " + e.getMessage(), e);
         }
+    }
+
+    public Collection<City> findAllCity() {
+        List<City> cities = new ArrayList<>();
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement("SELECT * FROM city")
+        ) {
+            try (ResultSet it = ps.executeQuery()) {
+                while (it.next()) {
+                    cities.add(new City(it.getInt("id"), it.getString("name")));
+                }
+            }
+        }  catch (SQLException e) {
+            LOG.error("SQL Error " + e.getMessage(), e);
+        }
+        return cities;
     }
 }

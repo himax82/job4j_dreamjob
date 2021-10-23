@@ -12,7 +12,6 @@ public class DownloadServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String name = req.getParameter("id");
-        System.out.println(name);
         File downloadFile = null;
         for (File file : new File("c:\\images\\").listFiles()) {
             if (name.equals(file.getName())) {
@@ -20,7 +19,7 @@ public class DownloadServlet extends HttpServlet {
                 break;
             }
         }
-        try (FileInputStream stream = new FileInputStream(downloadFile)){
+        try (FileInputStream stream = new FileInputStream(downloadFile)) {
             resp.getOutputStream().write(stream.readAllBytes());
         resp.setContentType("image/png");
         resp.setHeader("Content-Disposition", "attachment; filename=\"" + downloadFile.getName() + "\"");

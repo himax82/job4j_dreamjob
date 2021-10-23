@@ -63,7 +63,8 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th scope="col">Названия</th>
+                        <th scope="col">Имя</th>
+                        <th scope="col">Город</th>
                         <th scope="col">Фото</th>
                         <th scope="col">Действие</th>
                     </tr>
@@ -77,6 +78,11 @@
                                 </a>
                                 <c:out value="${candidate.name}"/>
                             </td>
+                                <td>
+                                    <c:set var="i" value="${candidate.cityId}"/>
+                                    <c:set var="cityname" value="${cities[i - 1]}"/>
+                                        <c:out value="${cityname.name}"/>
+                                </td>
                             <td>
                                 <img src="<c:url value='/download?id=${candidate.id}'/>" width="100px" height="100px"/>
                             </td>
