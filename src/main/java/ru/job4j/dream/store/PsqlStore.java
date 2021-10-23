@@ -246,7 +246,7 @@ public class PsqlStore implements Store {
 
     @Override
     public Candidate findByIdCandidate(int id) {
-        Optional<Candidate> candidate = Optional.empty();
+        Candidate candidate = null;
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =  cn.prepareStatement("SELECT * FROM candidate WHERE id = ?")
         ) {
@@ -254,19 +254,19 @@ public class PsqlStore implements Store {
             ps.execute();
             try (ResultSet it = ps.executeQuery()) {
                 if (it.next()) {
-                    candidate = Optional.of(new Candidate(id, it.getString("name"),
-                            it.getInt("cityId"), it.getTimestamp("created").toLocalDateTime()));
+                    candidate = new Candidate(id, it.getString("name"),
+                            it.getInt("cityId"), it.getTimestamp("created").toLocalDateTime());
                 }
             }
         }  catch (SQLException e) {
             LOG.error("SQL Error " + e.getMessage(), e);
         }
-        return candidate.orElse(null);
+        return candidate;
     }
 
     @Override
     public User findByEmailUser(String email) {
-        Optional<User> user = Optional.empty();
+        User user = null;
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =  cn.prepareStatement("SELECT * FROM users WHERE email = ?")
         ) {
@@ -274,17 +274,17 @@ public class PsqlStore implements Store {
             ps.execute();
             try (ResultSet it = ps.executeQuery()) {
                 if (it.next()) {
-                    user = Optional.of(new User(
+                    user = new User(
                     it.getInt("id"),
                     it.getString("name"),
                     email,
-                    it.getString("password")));
+                    it.getString("password"));
                 }
             }
         }  catch (SQLException e) {
             LOG.error("SQL Error " + e.getMessage(), e);
         }
-        return user.orElse(null);
+        return user;
     }
 
     public void deleteCandidate(int id) {
