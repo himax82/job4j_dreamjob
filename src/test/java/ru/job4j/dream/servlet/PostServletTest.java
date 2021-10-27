@@ -1,48 +1,32 @@
 package ru.job4j.dream.servlet;
 
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import ru.job4j.dream.model.Post;
 import ru.job4j.dream.store.PsqlStore;
-import ru.job4j.dream.store.Store;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(PsqlStore.class)
 public class PostServletTest {
 
     @Ignore
     @Test
-    public void whenCreatePost() throws IOException, ServletException {
-        Store store = PsqlStore.instOf();
-
-        PowerMockito.mockStatic(PsqlStore.class);
-        PowerMockito.when(PsqlStore.instOf()).thenReturn(store);
-
+    public void whenCreatePostMock() throws IOException, ServletException {
         HttpServletRequest req = mock(HttpServletRequest.class);
         HttpServletResponse resp = mock(HttpServletResponse.class);
-
-        PowerMockito.when(req.getParameter("id")).thenReturn("1");
-        PowerMockito.when(req.getParameter("name")).thenReturn("Vasya");
-        PowerMockito.when(req.getParameter("description")).thenReturn("Description");
-
+        when(req.getParameter("id")).thenReturn("0");
+        when(req.getParameter("name")).thenReturn("name of new post");
+        when(req.getParameter("description")).thenReturn("d");
         new PostServlet().doPost(req, resp);
-
-        Post result = store.findByIdPost(1);
-        assertThat(result.getName(), is("Vasya"));
+        Post post = PsqlStore.instOf().findByIdPost(1);
+        assertThat(post, notNullValue());
     }
 }
