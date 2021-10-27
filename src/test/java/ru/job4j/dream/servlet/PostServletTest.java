@@ -1,8 +1,10 @@
 package ru.job4j.dream.servlet;
 
 import org.junit.*;
+import ru.job4j.dream.model.Post;
 import ru.job4j.dream.model.User;
 import ru.job4j.dream.store.PsqlStore;
+import ru.job4j.dream.store.Store;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.io.*;
+import java.time.LocalDateTime;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
@@ -18,6 +21,15 @@ import static org.mockito.Mockito.*;
 
 
 public class PostServletTest {
+
+    @Test
+    public void whenCreatePostNow() {
+        Store store = PsqlStore.instOf();
+        Post post = new Post(0, "Java Job", LocalDateTime.now());
+        store.savePost(post);
+        Post postInDb = store.findByIdPost(post.getId());
+        assertThat(postInDb.getName(), is(post.getName()));
+    }
 
     @Ignore
     @Test
