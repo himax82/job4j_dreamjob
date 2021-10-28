@@ -30,4 +30,6 @@ public interface Store {
     void deleteCandidate(int id);
 
     Collection<City> findAllCity();
+
+    City saveCity(City city);
 }

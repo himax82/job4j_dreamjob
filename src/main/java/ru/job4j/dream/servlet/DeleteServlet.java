@@ -17,13 +17,9 @@ public class DeleteServlet extends HttpServlet {
             int id = Integer.parseInt(req.getParameter("id"));
             PsqlStore.instOf().deleteCandidate(id);
             File file = new File("c:\\images\\" + File.separator + id);
-            System.out.println("Файл");
-            System.out.println(file);
-            System.out.println(file.exists());
             if (file.exists()) {
                 file.delete();
             }
-        System.out.println(PsqlStore.instOf().findAllCandidates().size() + " candidates");
         req.setAttribute("candidates", PsqlStore.instOf().findAllCandidates());
         req.getRequestDispatcher("candidates.jsp").forward(req, resp);
     }

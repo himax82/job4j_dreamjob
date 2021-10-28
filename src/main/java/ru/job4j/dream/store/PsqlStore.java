@@ -8,6 +8,7 @@ import ru.job4j.dream.model.User;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.*;
 
@@ -22,7 +23,10 @@ public class PsqlStore implements Store {
     private PsqlStore() {
         Properties cfg = new Properties();
         try (BufferedReader io = new BufferedReader(
-                new FileReader("src\\test\\resources\\db.properties")
+                new InputStreamReader(
+                        PsqlStore.class.getClassLoader()
+                                .getResourceAsStream("db.properties")
+                )
         )) {
             cfg.load(io);
         } catch (Exception e) {
@@ -312,5 +316,24 @@ public class PsqlStore implements Store {
             LOG.error("SQL Error " + e.getMessage(), e);
         }
         return cities;
+    }
+
+    @Override
+    public City saveCity(City city) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement("INSERT INTO city(name) VALUES (?)",
+                     PreparedStatement.RETURN_GENERATED_KEYS)
+        ) {
+            ps.setString(1, city.getName());
+            ps.execute();
+            try (ResultSet id = ps.getGeneratedKeys()) {
+                if (id.next()) {
+                    city.setId(id.getInt(1));
+                }
+            }
+        }  catch (SQLException e) {
+            LOG.error("SQL Error " + e.getMessage(), e);
+        }
+        return city;
     }
 }

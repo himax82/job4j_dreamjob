@@ -1,6 +1,5 @@
 package ru.job4j.dream.servlet;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import ru.job4j.dream.model.Post;
 import ru.job4j.dream.store.PsqlStore;
@@ -17,7 +16,6 @@ import static org.mockito.Mockito.when;
 
 public class PostServletTest {
 
-    @Ignore
     @Test
     public void whenCreatePostMock() throws IOException, ServletException {
         HttpServletRequest req = mock(HttpServletRequest.class);
