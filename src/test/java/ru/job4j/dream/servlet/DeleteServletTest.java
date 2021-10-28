@@ -3,7 +3,6 @@ package ru.job4j.dream.servlet;
 import org.junit.Test;
 import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.City;
-import ru.job4j.dream.model.Post;
 import ru.job4j.dream.store.PsqlStore;
 import ru.job4j.dream.store.Store;
 
@@ -16,13 +15,10 @@ import java.time.LocalDateTime;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class DeleteServletTest {
-
 
     @Test
     public void whenCreateCandidate() throws IOException, ServletException {

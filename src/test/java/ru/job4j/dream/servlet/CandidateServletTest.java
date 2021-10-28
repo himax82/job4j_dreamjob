@@ -1,7 +1,6 @@
 package ru.job4j.dream.servlet;
 
 import org.junit.Test;
-import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.City;
 import ru.job4j.dream.store.PsqlStore;
 import ru.job4j.dream.store.Store;
