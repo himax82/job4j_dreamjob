@@ -34,7 +34,7 @@ public class DeleteServletTest {
         when(req.getParameter("id")).thenReturn(String.valueOf(candidate.getId()));
         when(req.getRequestDispatcher("candidates.jsp")).thenReturn(requestDispatcher);
         new DeleteServlet().doPost(req, resp);
-        PsqlStore.instOf().deleteCandidate(1);
+        PsqlStore.instOf().deleteCandidate(candidate.getId());
         assertThat(PsqlStore.instOf().findAllCandidates().size(), is(i));
     }
 
